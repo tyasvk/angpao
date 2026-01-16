@@ -1,0 +1,17 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.bg-lunar-pattern {
+    background-color: #8B0000;
+    background-image: url("https://www.transparenttextures.com/patterns/chinese-lanterns.png");
+    background-attachment: fixed;
+}
+.gold-gradient-text {
+    @apply text-transparent bg-clip-text bg-gradient-to-b from-[#FFF3B0] via-[#D4AF37] to-[#8A6E2F];
+}
+.oriental-border {
+    border: 3px solid;
+    border-image-source: linear-gradient(to bottom, #D4AF37, #F9E498, #AA8A2E);
+    border-image-slice: 1;
+}
