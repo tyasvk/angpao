@@ -247,7 +247,7 @@ const submit = () => {
 .lunar-nav {
     @apply flex items-center px-6 py-4 text-[11px] font-black uppercase tracking-[0.3em] text-[#F9E498]/60 rounded-xl transition-all duration-300;
 }
-.lunar-nav.active { @apply bg-gradient-to-r from-[#D4AF37] to-[#AA8A2E] text-[#4A0000] shadow-[0_10px_30px_rgba(212,175,55,0.4)] font-black; }
+.lunar-nav.active { @apply bg-gradient-to-r from-[#D4AF37] to-[#AA8A2E] text-[#4A0000] shadow-xl font-black; }
 
 .lunar-input {
     @apply w-full bg-[#4A0000] border border-[#D4AF37]/30 rounded-[1.5rem] py-4 px-8 text-sm text-[#F9E498] font-black outline-none focus:border-[#D4AF37] focus:shadow-[0_0_15px_rgba(212,175,55,0.1)] transition-all;
@@ -259,7 +259,19 @@ const submit = () => {
     @apply w-full bg-[#4A0000]/40 border border-[#D4AF37]/20 rounded-xl py-3 px-3 text-[9px] font-black text-[#F9E498] uppercase outline-none focus:border-[#D4AF37] focus:bg-[#4A0000]/80 transition-all;
 }
 
+/* --- TAMBAHAN UNTUK MENGHAPUS TANDA PANAH INPUT NUMBER --- */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+input[type=number] {
+    -moz-appearance: textfield;
+}
+/* --------------------------------------------------------- */
+
 .custom-scroll::-webkit-scrollbar { width: 6px; }
+.custom-scroll::-webkit-scrollbar-track { background: #4A0000; }
 .custom-scroll::-webkit-scrollbar-thumb { background: #D4AF37; border-radius: 20px; }
 
 :global(body) { 
