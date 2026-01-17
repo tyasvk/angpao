@@ -9,15 +9,15 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void
-    {
-        Schema::create('settings', function (Blueprint $table) {
-    $table->id();
-    $table->string('key')->unique(); // Contoh: 'welcome_title'
-    $table->text('value')->nullable();
-    $table->timestamps();
-});
-    }
+public function up(): void
+{
+    Schema::create('settings', function (Blueprint $table) {
+        $table->id();
+        $table->string('key')->unique();
+        $table->text('value')->nullable();
+        $table->timestamps();
+    });
+}
 
     /**
      * Reverse the migrations.

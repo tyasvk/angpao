@@ -6,7 +6,7 @@ use App\Http\Controllers\Admin\VoucherController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
-
+use App\Http\Controllers\Admin\SettingController;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,9 +15,8 @@ use Inertia\Inertia;
 */
 
 // Halaman Masukkan Voucher (Public)
-Route::get('/', function () {
-    return Inertia::render('Welcome'); 
-})->name('home');
+// Halaman utama yang menampilkan Form Klaim & Daftar Hadiah
+Route::get('/', [AngpaoController::class, 'userIndex'])->name('home');
 
 // Proses Klaim Voucher
 Route::post('/claim', [AngpaoController::class, 'processClaim'])->name('angpao.claim');
@@ -65,6 +64,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
         Route::delete('/angpao/batch', [AngpaoController::class, 'destroyBatch'])->name('angpao.destroyBatch');
     Route::delete('/angpao/{angpao}', [AngpaoController::class, 'destroy'])->name('angpao.destroy');
+
+    // Rute Edit Halaman Welcome/Claim
+    Route::get('/settings/welcome', [SettingController::class, 'editWelcome'])->name('settings.welcome');
+    Route::post('/settings/welcome', [SettingController::class, 'updateWelcome'])->name('settings.welcome.update');
 
     });
 });

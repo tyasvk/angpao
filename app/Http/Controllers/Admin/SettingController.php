@@ -9,12 +9,9 @@ use Inertia\Inertia;
 
 class SettingController extends Controller
 {
-    /**
-     * Menampilkan halaman edit konfigurasi Welcome
-     */
     public function editWelcome()
     {
-        // Ambil semua data setting dan ubah menjadi array (key => value)
+        // Ambil data setting dan jadikan key-value pair
         $settings = Setting::whereIn('key', [
             'welcome_title', 
             'welcome_subtitle', 
@@ -27,12 +24,8 @@ class SettingController extends Controller
         ]);
     }
 
-    /**
-     * Menyimpan perubahan konfigurasi
-     */
     public function updateWelcome(Request $request)
     {
-        // Validasi input sederhana
         $data = $request->validate([
             'welcome_title' => 'required|string|max:255',
             'welcome_subtitle' => 'required|string|max:255',
@@ -40,14 +33,13 @@ class SettingController extends Controller
             'show_my_gifts' => 'required|boolean',
         ]);
 
-        // Simpan atau Update ke database menggunakan loop
         foreach ($data as $key => $value) {
             Setting::updateOrCreate(
-                ['key' => $key], // Cari berdasarkan key
-                ['value' => $value] // Simpan nilainya
+                ['key' => $key],
+                ['value' => $value]
             );
         }
 
-        return back()->with('success', 'Konfigurasi Istana Berhasil Diperbarui!');
+        return back()->with('success', 'Konfigurasi Gerbang Utama Berhasil Diperbarui!');
     }
 }

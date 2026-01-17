@@ -178,19 +178,25 @@ public function index_master(Request $request)
 
 public function userIndex()
 {
-    // 1. Ambil hadiah unik yang statusnya masih 'active' (Prize Pool)
+    // Mengambil semua pengaturan dari tabel settings
+    $settings = \App\Models\Setting::pluck('value', 'key');
+
+    // Mengambil daftar hadiah unik yang masih tersedia (status active)
     $availableRewards = \App\Models\Angpao::where('status', 'active')
         ->select('reward_name', 'reward_type')
         ->distinct()
         ->get();
 
-    // 2. Ambil hadiah yang sudah diklaim oleh user yang sedang login (My Gifts)
-    $myGifts = \App\Models\Angpao::where('claimed_by', auth()->id())
-        ->where('status', 'claimed')
-        ->latest('claimed_at')
-        ->get();
+    // Mengambil hadiah yang sudah diklaim oleh user yang sedang login
+    $myGifts = auth()->check() 
+        ? \App\Models\Angpao::where('claimed_by', auth()->id())
+            ->where('status', 'claimed')
+            ->latest('claimed_at')
+            ->get()
+        : [];
 
     return \Inertia\Inertia::render('Angpao/Index', [
+        'settings' => $settings,
         'availableRewards' => $availableRewards,
         'myGifts' => $myGifts
     ]);

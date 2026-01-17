@@ -1,87 +1,72 @@
+<script setup>
+import { Link, Head } from '@inertiajs/vue3';
+
+defineProps({
+    title: String
+});
+</script>
+
 <template>
-    <div class="flex h-screen bg-[#F9FAFB] font-sans text-gray-900">
-        <Toast />
+    <Head :title="title + ' — Imperial Admin'" />
 
-        <aside class="w-72 bg-red-800 text-white flex flex-col shadow-2xl z-20">
-            <div class="p-8 border-b border-red-700/50">
-                <div class="flex items-center gap-3">
-                    <span class="text-4xl drop-shadow-lg">🧧</span>
-                    <div>
-                        <h1 class="text-xl font-black tracking-tighter leading-none">ANGPAO</h1>
-                        <p class="text-[10px] text-red-300 font-bold tracking-widest uppercase mt-1">Sistem Kontrol</p>
-                    </div>
-                </div>
+    <div class="h-screen w-full bg-[#4A0000] flex overflow-hidden font-sans text-[#F9E498] relative">
+        
+        <aside class="w-72 bg-gradient-to-b from-[#990000] to-[#4A0000] flex flex-col h-screen border-r-4 border-[#D4AF37] shadow-2xl fixed left-0 top-0 z-50 shrink-0">
+            <div class="absolute inset-0 opacity-5 pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/chinese-lanterns.png')]"></div>
+            
+            <div class="p-8 border-b border-[#D4AF37]/30 flex flex-col items-center relative z-10">
+                <div class="w-16 h-16 bg-[#D4AF37] rounded-2xl flex items-center justify-center text-4xl shadow-lg mb-4 rotate-3 border-2 border-[#F9E498]">🧧</div>
+                <h2 class="text-lg font-black tracking-[0.2em] uppercase text-center leading-tight bg-clip-text text-transparent bg-gradient-to-b from-[#FFF3B0] to-[#D4AF37]">
+                    Imperial Admin
+                </h2>
+                <p class="text-[9px] font-black text-[#F9E498] uppercase tracking-[0.3em] mt-2 opacity-80 text-center">Fortune Access</p>
             </div>
-
-            <nav class="flex-1 px-4 py-6 space-y-2">
-                <Link :href="route('admin.dashboard')" :class="[$page.component === 'Admin/Dashboard' ? 'bg-red-900 text-yellow-400 shadow-inner' : 'text-red-100 hover:bg-red-700/50']" class="flex items-center gap-3 px-4 py-3 rounded-2xl transition-all font-bold group">
-                    <span class="text-xl group-hover:scale-110 transition-transform">📊</span> Dashboard
+            
+            <nav class="flex-1 px-4 py-8 space-y-2 overflow-y-auto custom-scroll relative z-10">
+                <Link :href="route('admin.dashboard')" class="lunar-nav" :class="{ 'active': $page.component === 'Admin/Dashboard' }">
+                    <span>📊</span> <span class="ml-3">Ringkasan Utama</span>
+                </Link>
+                
+                <Link :href="route('admin.angpao.index')" class="lunar-nav" :class="{ 'active': $page.component === 'Admin/Angpao/Index' }">
+                    <span>📜</span> <span class="ml-3">Gudang Voucher</span>
                 </Link>
 
-                <Link :href="route('admin.vouchers.index')" :class="[$page.component === 'Admin/Vouchers/Index' ? 'bg-red-900 text-yellow-400 shadow-inner' : 'text-red-100 hover:bg-red-700/50']" class="flex items-center gap-3 px-4 py-3 rounded-2xl transition-all font-bold group">
-                    <span class="text-xl group-hover:scale-110 transition-transform">🎫</span> Kelola Voucher
+                <Link :href="route('admin.angpao.create')" class="lunar-nav" :class="{ 'active': $page.component === 'Admin/Angpao/Create' }">
+                    <span>👑</span> <span class="ml-3">Rilis Angpao Baru</span>
                 </Link>
 
-                <Link :href="route('admin.profile.edit')" :class="[$page.component === 'Admin/Profile/Edit' ? 'bg-red-900 text-yellow-400 shadow-inner' : 'text-red-100 hover:bg-red-700/50']" class="flex items-center gap-3 px-4 py-3 rounded-2xl transition-all font-bold group">
-                    <span class="text-xl group-hover:scale-110 transition-transform">⚙️</span> Profil
+                <Link :href="route('admin.settings.welcome')" class="lunar-nav" :class="{ 'active': $page.component === 'Admin/Settings/Welcome' }">
+                    <span>⚙️</span> <span class="ml-3">Edit Welcome</span>
+                </Link>
+
+                <Link :href="route('admin.angpao.history')" class="lunar-nav" :class="{ 'active': $page.component === 'Admin/Angpao/History' }">
+                    <span>⌛</span> <span class="ml-3">Riwayat Klaim</span>
                 </Link>
             </nav>
 
-            <div class="p-4 m-4 bg-red-900/50 rounded-3xl border border-red-700/30">
-                <div class="flex items-center gap-3 px-2 mb-4">
-                    <div class="w-10 h-10 rounded-2xl bg-yellow-500 flex items-center justify-center text-red-900 font-black shadow-lg uppercase">
-                        {{ $page.props.auth.user.name.charAt(0) }}
-                    </div>
-                    <div class="overflow-hidden text-ellipsis whitespace-nowrap">
-                        <p class="text-sm font-black truncate">{{ $page.props.auth.user.name }}</p>
-                        <p class="text-[10px] text-red-300 font-medium">Administrator</p>
-                    </div>
-                </div>
-                <Link :href="route('logout')" method="post" as="button" class="w-full py-3 bg-red-700 hover:bg-red-600 text-white rounded-2xl transition-all font-black text-xs uppercase tracking-widest active:scale-95">
-                    🚪 Keluar
+            <div class="p-6 border-t border-[#D4AF37]/30 z-10">
+                <Link :href="route('logout')" method="post" as="button" class="w-full flex items-center px-6 py-4 text-[10px] font-black uppercase tracking-[0.3em] text-[#F9E498] opacity-50 hover:opacity-100 transition-all">
+                    🚪 Leave Palace
                 </Link>
             </div>
         </aside>
 
-        <div class="flex-1 flex flex-col min-w-0 overflow-hidden">
-            <header class="h-20 bg-white border-b border-gray-200 flex items-center justify-between px-10">
-                <h2 class="font-black text-gray-800 text-xl uppercase tracking-tight">
-                    <span class="text-gray-300 font-light mr-2">/</span> {{ title }}
-                </h2>
-                <Link href="/" class="px-4 py-2 border-2 border-red-100 text-red-600 rounded-xl text-xs font-black hover:bg-red-50 transition-all uppercase tracking-widest">
-                    🏠 Lihat Web
-                </Link>
+        <main class="flex-1 ml-72 flex flex-col min-w-0 relative h-screen overflow-hidden">
+            <header class="h-24 bg-[#660000] border-b-4 border-[#D4AF37] px-10 flex items-center justify-between shadow-2xl shrink-0 z-40">
+                <slot name="header" />
             </header>
 
-            <main class="flex-1 overflow-y-auto p-8 lg:p-12">
-                <Transition name="page-fade" mode="out-in" appear>
-                    <div :key="$page.url">
-                        <slot />
-                    </div>
-                </Transition>
-            </main>
-        </div>
+            <div class="flex-1 overflow-y-auto custom-scroll p-10">
+                <slot />
+            </div>
+        </main>
     </div>
 </template>
 
-<script setup>
-import { Link } from '@inertiajs/vue3';
-import Toast from '@/Components/Toast.vue';
-
-defineProps({ title: String });
-</script>
-
-<style>
-/* CSS Animasi Transisi */
-.page-fade-enter-active, .page-fade-leave-active {
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-}
-.page-fade-enter-from {
-    opacity: 0;
-    transform: translateY(10px);
-}
-.page-fade-leave-to {
-    opacity: 0;
-    transform: translateY(-10px);
-}
+<style scoped>
+.lunar-nav { @apply flex items-center px-6 py-4 text-[11px] font-black uppercase tracking-[0.3em] text-[#F9E498]/60 rounded-xl transition-all duration-300; }
+.lunar-nav:hover { @apply bg-[#D4AF37]/10 text-[#F9E498]; }
+.lunar-nav.active { @apply bg-gradient-to-r from-[#D4AF37] to-[#AA8A2E] text-[#4A0000] shadow-xl font-black; }
+.custom-scroll::-webkit-scrollbar { width: 6px; }
+.custom-scroll::-webkit-scrollbar-thumb { background: #D4AF37; border-radius: 10px; }
 </style>

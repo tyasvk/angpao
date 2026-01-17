@@ -4,147 +4,172 @@ import { ref, onMounted } from 'vue';
 import RainingAngpao from '@/Components/RainingAngpao.vue';
 
 const props = defineProps({
-    status: String,
-    error: String,
+    settings: Object,
+    availableRewards: Array,
+    myGifts: Array,
 });
 
-// Logic Form Klaim
 const form = useForm({
     code: '',
 });
 
-const submit = () => {
+const submitClaim = () => {
     form.post(route('angpao.claim'), {
         onSuccess: () => form.reset(),
     });
 };
 
-// Logic Musik Latar
 const isPlaying = ref(false);
 const audioPlayer = ref(null);
 
 const toggleMusic = () => {
-    if (isPlaying.value) {
-        audioPlayer.value.pause();
-    } else {
-        audioPlayer.value.play();
-    }
+    if (isPlaying.value) audioPlayer.value.pause();
+    else audioPlayer.value.play();
     isPlaying.value = !isPlaying.value;
 };
-
-onMounted(() => {
-    if (audioPlayer.value) {
-        audioPlayer.value.volume = 0.4;
-    }
-});
 </script>
 
 <template>
-    <Head title="Klaim Angpao Hoki 2026" />
+    <Head :title="(settings?.welcome_title || 'Imperial Fortune') + ' — Claim Access'" />
 
     <RainingAngpao />
 
-    <div class="min-h-screen bg-[#5c0000] relative overflow-hidden flex flex-col items-center justify-center p-6 font-sans">
+    <div class="min-h-screen lg:h-screen w-full bg-[#4A0000] flex flex-col lg:flex-row relative overflow-hidden font-sans text-[#F9E498]">
         
-        <div class="absolute inset-0 opacity-10 pointer-events-none" style="background-image: url('https://www.transparenttextures.com/patterns/oriental-tiles.png');"></div>
-        <div class="absolute top-0 w-full h-64 bg-gradient-to-b from-black/50 to-transparent pointer-events-none"></div>
+        <div class="fixed inset-0 opacity-5 pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/chinese-lanterns.png')]"></div>
+        
+        <div class="fixed top-0 left-0 w-full h-1 bg-gradient-to-r from-[#D4AF37] via-[#F9E498] to-[#AA8A2E] z-50"></div>
+        <div class="fixed bottom-0 left-0 w-full h-1 bg-gradient-to-r from-[#AA8A2E] via-[#F9E498] to-[#D4AF37] z-50"></div>
 
-        <div class="relative z-10 w-full max-w-xl text-center">
-            
-            <div class="mb-12 animate-bounce-slow">
-                <div class="inline-block relative">
-                    <span class="text-8xl drop-shadow-[0_10px_20px_rgba(234,179,8,0.5)]">🧧</span>
-                    <div class="absolute -top-4 -right-4 bg-yellow-500 text-red-900 text-xs font-black px-3 py-1 rounded-full shadow-lg border-2 border-white animate-pulse">
-                        2026
+        <section class="w-full lg:w-5/12 p-5 lg:p-8 flex flex-col relative z-10 lg:border-r-2 lg:border-[#D4AF37]/20 bg-[#660000]/10 backdrop-blur-sm">
+            <div class="mb-6 text-center flex flex-col items-center">
+                <h3 class="text-[8px] font-black uppercase tracking-[0.4em] text-[#D4AF37] mb-1 flex items-center gap-2">
+                    <span class="w-1.5 h-1.5 rounded-full bg-[#D4AF37] animate-pulse"></span>
+                    Manifest Karunia
+                    <span class="w-1.5 h-1.5 rounded-full bg-[#D4AF37] animate-pulse"></span>
+                </h3>
+                <h2 class="text-xl font-black uppercase tracking-widest leading-none">
+                    Karunia <span class="text-white text-lg block mt-1">Tersedia</span>
+                </h2>
+            </div>
+
+            <div class="flex-1 overflow-y-auto custom-scroll px-2">
+                <div class="flex flex-col items-center gap-3">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-1 gap-3 w-full max-w-[280px]">
+                        <div v-for="(reward, index) in availableRewards" :key="index" 
+                             class="flex items-center gap-4 bg-[#4A0000]/60 border border-[#D4AF37]/20 p-3 rounded-2xl group hover:border-[#F9E498] transition-all shadow-lg w-full">
+                            <div class="w-10 h-10 shrink-0 bg-gradient-to-br from-[#D4AF37] to-[#AA8A2E] rounded-xl flex items-center justify-center text-xl shadow-md group-hover:scale-110 transition-transform">
+                                {{ reward.reward_type === 'money' ? '💰' : '🎁' }}
+                            </div>
+                            <div class="flex flex-col min-w-0 text-left">
+                                <span class="text-[10px] font-black uppercase tracking-widest text-[#F9E498] truncate">{{ reward.reward_name }}</span>
+                                <span class="text-[7px] font-black uppercase tracking-widest text-[#D4AF37]/40">{{ reward.reward_type }}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div v-if="availableRewards.length === 0" class="py-10 text-center opacity-20 text-[9px] uppercase tracking-widest">
+                        Seluruh Karunia Telah Terbagi
+                    </div>
+
+                    <div v-if="myGifts?.length > 0" class="mt-6 pt-4 border-t border-[#D4AF37]/10 w-full max-w-[250px] text-center">
+                        <p class="text-[8px] font-black uppercase tracking-[0.2em] opacity-30 mb-3 text-center">Riwayat Klaim Anda</p>
+                        <div class="flex flex-col items-center gap-1.5">
+                            <div v-for="gift in myGifts.slice(0, 2)" :key="gift.id" 
+                                 class="text-[8px] font-black uppercase tracking-widest opacity-60 bg-[#4A0000]/40 px-3 py-1 rounded-lg border border-[#D4AF37]/10 w-full">
+                                🏮 {{ gift.reward_name }}
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <h1 class="text-5xl md:text-6xl font-black mt-6 tracking-tighter uppercase italic">
-                    <span class="text-white">ANGPAO</span>
-                    <span class="block text-transparent bg-clip-text bg-gradient-to-b from-yellow-200 to-yellow-500 drop-shadow-sm">HOKI BESAR</span>
-                </h1>
-                <p class="text-red-200/80 text-sm font-bold uppercase tracking-[0.4em] mt-3">Semoga Keberuntungan Menyertai Anda</p>
             </div>
+        </section>
 
-            <div class="backdrop-blur-xl bg-white/10 border border-white/20 rounded-[40px] p-8 md:p-12 shadow-2xl relative overflow-hidden group">
-                <div class="absolute inset-4 border border-yellow-500/20 rounded-[30px] pointer-events-none group-hover:border-yellow-500/40 transition-colors"></div>
-
-                <form @submit.prevent="submit" class="relative z-10 space-y-6">
-                    <div>
-                        <label class="block text-xs font-black text-yellow-500 uppercase tracking-widest mb-4">Masukkan Kode Rahasia</label>
-                        <input
-                            v-model="form.code"
-                            type="text"
-                            placeholder="CONTOH: HOKI88"
-                            required
-                            class="w-full bg-black/30 border-2 border-white/10 rounded-2xl px-6 py-5 text-center text-2xl font-black text-yellow-400 placeholder:text-white/10 focus:border-yellow-500 focus:ring-0 transition-all uppercase tracking-widest"
-                        />
-                        
-                        <Transition enter-from-class="opacity-0 -translate-y-2" class="transition">
-                            <p v-if="$page.props.flash.error" class="mt-4 text-red-400 font-bold text-sm bg-red-950/50 py-2 rounded-xl border border-red-500/30 italic">
-                                ⚠️ {{ $page.props.flash.error }}
-                            </p>
-                        </Transition>
-                        <Transition enter-from-class="opacity-0 -translate-y-2" class="transition">
-                            <p v-if="$page.props.flash.success" class="mt-4 text-green-400 font-bold text-sm bg-green-950/50 py-2 rounded-xl border border-green-500/30">
-                                ✨ {{ $page.props.flash.success }}
-                            </p>
-                        </Transition>
-                    </div>
-
-                    <button
-                        :disabled="form.processing"
-                        class="w-full bg-gradient-to-b from-yellow-300 via-yellow-500 to-yellow-600 text-red-950 font-black py-5 rounded-2xl shadow-[0_8px_0_0_#854d0e] active:shadow-none active:translate-y-2 transition-all text-xl uppercase tracking-[0.2em] relative overflow-hidden group"
-                    >
-                        <span class="relative z-10">Buka Angpao Sekarang!</span>
-                        <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent -translate-x-full group-hover:animate-shine"></div>
-                    </button>
-                </form>
-            </div>
-
-            <p class="mt-12 text-red-200/40 text-[10px] font-bold uppercase tracking-[0.3em]">
-                Terbatas Untuk Keberuntungan Terpilih &bull; &copy; 2026
-            </p>
-        </div>
-
-        <div class="fixed bottom-10 right-10 z-50">
-            <button 
-                @click="toggleMusic"
-                class="w-16 h-16 bg-gradient-to-tr from-yellow-600 to-yellow-400 rounded-2xl shadow-2xl flex items-center justify-center text-3xl border-2 border-white/30 hover:scale-110 active:scale-90 transition-all duration-500 relative group"
-            >
-                <span v-if="isPlaying" class="absolute inset-0 rounded-2xl bg-yellow-400 animate-ping opacity-20"></span>
-                <span :class="{'animate-spin-slow': isPlaying}">{{ isPlaying ? '🎵' : '🔇' }}</span>
+        <section class="w-full lg:w-7/12 p-6 flex flex-col items-center justify-center relative z-10 bg-[#4A0000]/30">
+            <div class="max-w-xs w-full space-y-6 text-center">
                 
-                <span class="absolute right-full mr-4 px-4 py-2 bg-black/80 text-white text-[10px] font-bold uppercase tracking-widest rounded-xl opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
-                    {{ isPlaying ? 'Matikan Instrumen' : 'Putar Instrumen Hoki' }}
-                </span>
+                <div class="space-y-4">
+                    <div class="relative inline-block">
+                        <div class="absolute inset-0 bg-[#D4AF37] blur-[30px] opacity-20 scale-125"></div>
+                        <div class="w-20 h-20 bg-gradient-to-br from-[#B91C1C] to-[#7F1D1D] rounded-[1.5rem] flex items-center justify-center text-4xl shadow-2xl mx-auto rotate-2 border-2 border-[#D4AF37] relative z-10">
+                            🧧
+                        </div>
+                    </div>
+                    <div>
+                        <h1 class="text-2xl font-black tracking-[0.2em] uppercase text-transparent bg-clip-text bg-gradient-to-b from-[#F9E498] via-[#D4AF37] to-[#AA8A2E] leading-none mb-1">
+                            {{ settings?.welcome_title || 'Imperial Fortune' }}
+                        </h1>
+                        <p class="text-[8px] font-black text-[#F9E498] tracking-[0.4em] uppercase opacity-60">
+                            {{ settings?.welcome_subtitle || 'Fortune Access • 2026' }}
+                        </p>
+                    </div>
+                </div>
+
+                <div class="bg-gradient-to-b from-[#991B1B] to-[#7F1D1D] p-6 lg:p-8 rounded-[2.5rem] border-2 border-[#D4AF37] shadow-2xl relative overflow-hidden">
+                    <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,_transparent_0%,_black_150%)] opacity-40"></div>
+                    
+                    <form @submit.prevent="submitClaim" class="space-y-6 relative z-10">
+                        <div class="space-y-2">
+                            <label class="text-[8px] font-black text-[#F9E498] uppercase tracking-[0.3em] block opacity-40">
+                                Imperial Code Access
+                            </label>
+                            <input 
+                                v-model="form.code" 
+                                type="text" 
+                                placeholder="INPUT KODE"
+                                class="w-full py-4 px-3 bg-[#4A0000]/60 border border-[#D4AF37]/30 rounded-2xl text-center text-xl font-black tracking-[0.2em] text-[#F9E498] uppercase placeholder:text-[#F9E498]/10 focus:border-[#F9E498] transition-all outline-none shadow-inner"
+                                required
+                            >
+                            <p v-if="$page.props.flash.error" class="text-red-400 font-black text-[8px] uppercase tracking-widest py-2">
+                                {{ $page.props.flash.error }}
+                            </p>
+                        </div>
+
+                        <button 
+                            :disabled="form.processing"
+                            class="w-full py-4 bg-gradient-to-r from-[#D4AF37] via-[#F9E498] to-[#D4AF37] text-[#4A0000] font-black text-[10px] uppercase tracking-[0.4em] rounded-2xl shadow-lg hover:scale-[1.02] active:scale-95 transition-all disabled:opacity-50"
+                        >
+                            {{ form.processing ? 'Verifying...' : 'Buka Karunia 🧧' }}
+                        </button>
+                    </form>
+                </div>
+
+                <p class="text-[7px] font-black text-[#D4AF37] uppercase tracking-[0.3em] opacity-30">
+                    Imperial Palace Guard &bull; Authenticity 2026
+                </p>
+            </div>
+        </section>
+
+        <div class="fixed bottom-4 right-4 z-50 flex flex-col items-center gap-2">
+            <button @click="toggleMusic" class="w-10 h-10 bg-gradient-to-tr from-[#D4AF37] to-[#F9E498] rounded-xl shadow-xl flex items-center justify-center text-lg border border-white/20 hover:scale-110 active:scale-90 transition-all">
+                {{ isPlaying ? '🎵' : '🔇' }}
             </button>
+            <audio ref="audioPlayer" loop src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"></audio>
         </div>
 
-        <audio ref="audioPlayer" loop src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"></audio>
+        <div class="fixed bottom-4 left-0 w-full flex justify-around opacity-5 text-4xl pointer-events-none z-0">
+            <span>☁️</span><span>☁️</span><span>☁️</span>
+        </div>
     </div>
 </template>
 
-<style scoped>
-@keyframes bounce-slow {
+<style>
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #4A0000;
+    overflow: hidden;
+}
+
+.custom-scroll::-webkit-scrollbar { width: 3px; }
+.custom-scroll::-webkit-scrollbar-thumb { background: #D4AF37; border-radius: 10px; }
+
+@keyframes sway {
     0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-20px); }
-}
-.animate-bounce-slow {
-    animation: bounce-slow 4s ease-in-out infinite;
+    50% { transform: translateY(-10px); }
 }
 
-@keyframes spin-slow {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
-}
-.animate-spin-slow {
-    animation: spin-slow 8s linear infinite;
-}
+.animate-sway { animation: sway 3s ease-in-out infinite; }
 
-@keyframes shine {
-    100% { transform: translateX(100%); }
-}
-.animate-shine {
-    animation: shine 0.7s ease-in-out;
-}
+* { font-style: normal !important; }
 </style>
